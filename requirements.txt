@@ -1,0 +1,9 @@
+torch==2.2.2
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+numpy==1.26.4
+opencv-python==4.11.0.86
+facenet-pytorch==2.6.0
+pydantic==2.11.3
+python-multipart==0.0.20
+pytest==8.3.5

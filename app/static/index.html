@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Face Recognition MVP</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <p class="eyebrow">Face Recognition MVP</p>
+        <h1>Face recognition with confidence scoring and assisted identity labeling.</h1>
+        <p class="lede">
+          Upload an image to detect faces, review confidence scores, and assign names to unknown
+          matches. Recorded face-name pairs are stored in SQLite for future recognition.
+        </p>
+        <p class="author-credit">Created by Arihant Birani</p>
+      </section>
+
+      <section class="panel controls">
+        <label class="upload">
+          <span>Select Image</span>
+          <input id="file-input" type="file" accept="image/*" />
+        </label>
+        <button id="recognize-button" type="button">Run Recognition</button>
+        <p id="status" class="status">Select an image to begin.</p>
+      </section>
+
+      <section class="workspace">
+        <div class="panel preview-panel">
+          <div id="preview-shell" class="preview-shell empty">
+            <div id="image-stage" class="image-stage">
+              <img id="preview-image" alt="Uploaded preview" />
+              <canvas id="overlay"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="panel results-panel">
+          <div class="panel-header">
+            <h2>Recognition Results</h2>
+            <span id="result-count">0 detections</span>
+          </div>
+          <div id="results" class="results"></div>
+        </div>
+      </section>
+    </main>
+
+    <script src="/static/app.js" defer></script>
+  </body>
+  </html>
