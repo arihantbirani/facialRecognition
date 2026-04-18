@@ -8,6 +8,7 @@ const overlay = document.getElementById("overlay");
 const results = document.getElementById("results");
 const resultCount = document.getElementById("result-count");
 const supportedExtensions = [".jpg", ".jpeg", ".png", ".bmp"];
+const apiBaseUrl = resolveApiBaseUrl();
 
 let selectedFile = null;
 let imageBitmap = null;
@@ -64,7 +65,7 @@ recognizeButton.addEventListener("click", async () => {
   try {
     const formData = new FormData();
     formData.append("file", selectedFile);
-    const response = await fetch("/recognize", {
+    const response = await fetch(`${apiBaseUrl}/recognize`, {
       method: "POST",
       body: formData,
     });
@@ -203,7 +204,7 @@ async function submitIdentity(event, match) {
     payload.append("confidence", String(match.confidence));
     payload.append("file", blob, "crop.jpg");
 
-    const response = await fetch("/identify-face", {
+    const response = await fetch(`${apiBaseUrl}/identify-face`, {
       method: "POST",
       body: payload,
     });
@@ -244,7 +245,7 @@ async function cropFace(box) {
 async function rerunRecognition() {
   const formData = new FormData();
   formData.append("file", selectedFile);
-  const response = await fetch("/recognize", {
+  const response = await fetch(`${apiBaseUrl}/recognize`, {
     method: "POST",
     body: formData,
   });
@@ -283,4 +284,12 @@ function isSupportedFile(file) {
 
 function setStatus(message) {
   statusText.textContent = message;
+}
+
+function resolveApiBaseUrl() {
+  const configuredUrl =
+    window.__FACE_API_BASE_URL__ ||
+    document.querySelector('meta[name="face-api-base-url"]')?.content ||
+    "";
+  return configuredUrl.replace(/\/$/, "") || window.location.origin;
 }

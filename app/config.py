@@ -14,6 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 class Settings:
     """Central application settings."""
 
+    database_url: str = os.getenv("DATABASE_URL", "").strip()
     database_path: Path = field(
         default_factory=lambda: Path(
             os.getenv("DATABASE_PATH", BASE_DIR / "face_recognition.db")
@@ -32,6 +33,13 @@ class Settings:
         default_factory=lambda: {".jpg", ".jpeg", ".png", ".bmp"}
     )
     max_upload_size_bytes: int = int(os.getenv("MAX_UPLOAD_SIZE_BYTES", str(5 * 1024 * 1024)))
+    cors_allowed_origins: list[str] = field(
+        default_factory=lambda: [
+            origin.strip()
+            for origin in os.getenv("CORS_ALLOWED_ORIGINS", "*").split(",")
+            if origin.strip()
+        ]
+    )
 
 
 settings = Settings()

@@ -154,9 +154,85 @@ curl -X DELETE http://127.0.0.1:8000/people/Arihant
 
 Environment variables:
 
+- `DATABASE_URL`: external Postgres connection string for deployed environments
 - `DATABASE_PATH`: optional SQLite file path
 - `SIMILARITY_THRESHOLD`: cosine similarity threshold, default `0.70`
 - `MAX_UPLOAD_SIZE_BYTES`: maximum accepted upload size, default `5242880`
+- `CORS_ALLOWED_ORIGINS`: comma-separated allowed frontend origins, default `*`
+- `FACE_DETECTION_CONFIDENCE_THRESHOLD`: detector probability threshold
+- `MIN_FACE_BOX_SIZE`: minimum face box size in pixels
+- `SECONDARY_DETECTION_SCALE`: second-pass upscale factor for smaller faces
+- `DETECTION_MERGE_IOU_THRESHOLD`: duplicate merge threshold for multi-scale detection
+
+## Deployment shape
+
+This project is now set up for two deployment modes:
+
+1. Local demo: FastAPI + SQLite
+2. Split deployment: frontend on Vercel, backend on a Python host with Postgres
+
+### Recommended split deployment
+
+- Frontend: Vercel
+- Backend: Render, Railway, Fly.io, or another Python host
+- Database: Postgres via Neon, Supabase, or another provider
+
+Deployment config files included:
+
+- [render.yaml](/Users/arihantbirani/Documents/faceRecognition/render.yaml) for a Render backend
+- [vercel.json](/Users/arihantbirani/Documents/faceRecognition/vercel.json) for a frontend-only Vercel deployment from `app/static`
+
+### Why not Vercel for the backend as-is?
+
+- Vercel does not support durable local SQLite storage in serverless functions.
+- This app depends on heavier Python ML libraries, which are a poor fit for a serverless cold-start path.
+- Vercel function request limits are not ideal for repeated image uploads.
+
+### Backend deployment notes
+
+- Set `DATABASE_URL` to your Postgres connection string.
+- Set `CORS_ALLOWED_ORIGINS` to your Vercel frontend origin, for example:
+
+```bash
+CORS_ALLOWED_ORIGINS=https://your-app.vercel.app
+```
+
+- Start the backend with:
+
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
+
+On Render, the included `render.yaml` already sets the service shape. You only need to provide:
+
+- `DATABASE_URL`
+- `CORS_ALLOWED_ORIGINS`
+
+### Frontend deployment notes
+
+The browser client now supports a separate API base URL. If the frontend is not served by the same backend origin, set one of the following in your deployed HTML:
+
+- `window.__FACE_API_BASE_URL__`
+- the `<meta name="face-api-base-url" content="...">` tag in `index.html`
+
+Example:
+
+```html
+<meta name="face-api-base-url" content="https://your-backend.example.com">
+```
+
+For a frontend-only Vercel deployment from this repo:
+
+1. Import the GitHub repository into Vercel.
+2. Let Vercel detect the included [vercel.json](/Users/arihantbirani/Documents/faceRecognition/vercel.json).
+3. Vercel will deploy `app/static` as the site output.
+4. Update the `face-api-base-url` meta tag in [app/static/index.html](/Users/arihantbirani/Documents/faceRecognition/app/static/index.html) to your backend URL before deploying.
+
+Example backend URL:
+
+```html
+<meta name="face-api-base-url" content="https://face-recognition-api.onrender.com">
+```
 
 ## Development and tests
 
