@@ -43,27 +43,6 @@ uvicorn app.main:app --reload
 
 The SQLite database is created automatically at `./face_recognition.db` on first startup.
 
-Open the frontend at [http://127.0.0.1:8000](http://127.0.0.1:8000).
-
-## Suggested local test image layout
-
-Create a `data/` folder with names like:
-
-```text
-data/
-├── arihant_selfie.jpg
-├── arihant_mirror.jpg
-├── group_indoor.jpg
-└── group_night.jpg
-```
-
-Recommended use:
-
-- Register with `arihant_selfie.jpg`
-- Optionally add `arihant_mirror.jpg`
-- Recognize against `group_indoor.jpg`
-- Use `group_night.jpg` as a harder low-light test
-
 ## API endpoints
 
 ### Health check
